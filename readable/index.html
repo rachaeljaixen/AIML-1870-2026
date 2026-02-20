@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Readable — can you read this?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header>
+    <h1 class="logo">READABLE</h1>
+    <p class="tagline">&#x1F49C; can you read this? &#x1F49C;</p>
+  </header>
+
+  <main>
+
+    <!-- ── Text Preview ── -->
+    <section class="preview-section" aria-label="Text preview">
+      <h2 class="section-label">preview</h2>
+      <div id="preview-area">
+        <h3 id="preview-heading">a horse walks into a bar</h3>
+        <p id="preview-paragraph">the bartender says "why the long face?" the horse says nothing because horses cannot talk. a pelican in a trench coat orders a gin and tonic. nobody questions it. the jukebox plays a song nobody recognizes but everyone knows the words.</p>
+        <p id="preview-fine-print">a man in the corner is eating soup with a fork. he seems happy about it.</p>
+      </div>
+    </section>
+
+    <!-- ── Controls ── -->
+    <section class="controls-section" aria-label="Color and size controls">
+
+      <div class="control-group">
+        <h2 class="section-label">background</h2>
+        <div class="slider-row">
+          <label for="bg-r">&#x1F534; R</label>
+          <input type="range" id="bg-r" class="slider red-slider" min="0" max="255" value="10" aria-label="Background red">
+          <span id="bg-r-val" class="slider-value">10</span>
+        </div>
+        <div class="slider-row">
+          <label for="bg-g">&#x1F7E2; G</label>
+          <input type="range" id="bg-g" class="slider green-slider" min="0" max="255" value="10" aria-label="Background green">
+          <span id="bg-g-val" class="slider-value">10</span>
+        </div>
+        <div class="slider-row">
+          <label for="bg-b">&#x1F535; B</label>
+          <input type="range" id="bg-b" class="slider blue-slider" min="0" max="255" value="15" aria-label="Background blue">
+          <span id="bg-b-val" class="slider-value">15</span>
+        </div>
+        <div class="swatch-row">
+          <span class="swatch-label">Preview:</span>
+          <div id="bg-swatch" class="color-swatch" aria-label="Background color swatch"></div>
+          <span id="bg-hex" class="hex-value">#0A0A0F</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <h2 class="section-label">text</h2>
+        <div class="slider-row">
+          <label for="text-r">&#x1F534; R</label>
+          <input type="range" id="text-r" class="slider red-slider" min="0" max="255" value="255" aria-label="Text red">
+          <span id="text-r-val" class="slider-value">255</span>
+        </div>
+        <div class="slider-row">
+          <label for="text-g">&#x1F7E2; G</label>
+          <input type="range" id="text-g" class="slider green-slider" min="0" max="255" value="0" aria-label="Text green">
+          <span id="text-g-val" class="slider-value">0</span>
+        </div>
+        <div class="slider-row">
+          <label for="text-b">&#x1F535; B</label>
+          <input type="range" id="text-b" class="slider blue-slider" min="0" max="255" value="255" aria-label="Text blue">
+          <span id="text-b-val" class="slider-value">255</span>
+        </div>
+        <div class="swatch-row">
+          <span class="swatch-label">Preview:</span>
+          <div id="text-swatch" class="color-swatch" aria-label="Text color swatch"></div>
+          <span id="text-hex" class="hex-value">#FF00FF</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <h2 class="section-label">size</h2>
+        <div class="slider-row">
+          <label for="text-size">&#x1F4CF; Size</label>
+          <input type="range" id="text-size" class="slider size-slider" min="12" max="72" value="18" aria-label="Text size in pixels">
+          <span id="text-size-val" class="slider-value">18px</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── Metrics ── -->
+    <section class="metrics-section" aria-label="Accessibility metrics" aria-live="polite">
+      <h2 class="section-label">&#x1F4CA; how's it looking?</h2>
+      <div class="metrics-panel">
+        <div class="metric-row">
+          <span class="metric-label">contrast</span>
+          <span id="contrast-ratio" class="metric-value contrast-value">—</span>
+          <span id="contrast-badge" class="contrast-badge">—</span>
+        </div>
+        <div class="metric-row">
+          <span id="wcag-indicator" class="wcag-indicator">—</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-row">
+          <span class="metric-label">bg brightness</span>
+          <span id="bg-luminance" class="metric-value mono">—</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">text brightness</span>
+          <span id="text-luminance" class="metric-value mono">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Vision Simulation ── -->
+    <section class="vision-section" aria-label="Vision simulation">
+      <h2 class="section-label">&#x1F441;&#xFE0F; see it as...</h2>
+      <div class="radio-group" role="radiogroup">
+        <label class="radio-label">
+          <input type="radio" name="vision" value="normal" checked>
+          <span class="radio-custom" aria-hidden="true"></span>
+          normal
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="vision" value="protanopia">
+          <span class="radio-custom" aria-hidden="true"></span>
+          no reds <span class="radio-sub">(protanopia)</span>
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="vision" value="deuteranopia">
+          <span class="radio-custom" aria-hidden="true"></span>
+          no greens <span class="radio-sub">(deuteranopia)</span>
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="vision" value="tritanopia">
+          <span class="radio-custom" aria-hidden="true"></span>
+          no blues <span class="radio-sub">(tritanopia)</span>
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="vision" value="achromatopsia">
+          <span class="radio-custom" aria-hidden="true"></span>
+          grayscale <span class="radio-sub">(achromatopsia)</span>
+        </label>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
