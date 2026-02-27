@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tropical Seahorse Spike Jumper</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <div class="hud-panel">
+        <span class="hud-icon">&#x1F41A;</span>
+        <span id="score-val">0</span>
+      </div>
+      <div class="hud-panel">
+        <span id="dist-val">0m</span>
+      </div>
+      <div class="hud-panel">
+        <span id="shells-val">0</span>
+        <span class="hud-icon">&#x1F30A;</span>
+      </div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen">
+      <div class="screen-content">
+        <h1 class="game-title">
+          <span class="title-wave">Tropical</span><br>
+          <span class="title-main">Seahorse</span><br>
+          <span class="title-sub">Spike Jumper</span>
+        </h1>
+        <div class="title-deco">&#x1F41A; &#x1F30A; &#x1F420; &#x1F334; &#x1F41A;</div>
+        <div class="hs-display">Best Score: <strong id="hs-val">0</strong></div>
+        <div class="button-group">
+          <button id="btn-play" class="btn btn-primary">Play</button>
+          <button id="btn-color" class="btn btn-secondary">Change Color</button>
+        </div>
+        <p class="controls-hint">
+          <kbd>SPACE</kbd> / <kbd>&#x2191;</kbd> to jump &nbsp;|&nbsp;
+          Double-jump when the eel warns! &nbsp;|&nbsp;
+          <kbd>ESC</kbd> to pause
+        </p>
+      </div>
+    </div>
+
+    <!-- Pause Menu -->
+    <div id="pause-menu" class="screen overlay hidden">
+      <div class="screen-content compact">
+        <h2>Paused</h2>
+        <div class="button-group">
+          <button id="btn-resume" class="btn btn-primary">Resume</button>
+          <button id="btn-restart-pause" class="btn btn-secondary">Restart</button>
+        </div>
+        <p class="controls-hint"><kbd>ESC</kbd> to resume</p>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameover-screen" class="screen overlay hidden">
+      <div class="screen-content compact">
+        <h2 class="gameover-title">Wipeout!</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-label">Score</div>
+            <div class="stat-value" id="go-score">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Shells</div>
+            <div class="stat-value" id="go-shells">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Best</div>
+            <div class="stat-value" id="go-best">0</div>
+          </div>
+        </div>
+        <div id="go-best-label" class="new-best hidden">New Best!</div>
+        <button id="btn-retry" class="btn btn-primary btn-bounce">Try Again</button>
+        <p class="controls-hint"><kbd>SPACE</kbd> to retry</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

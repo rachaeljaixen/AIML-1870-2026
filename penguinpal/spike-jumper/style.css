@@ -1,0 +1,313 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #050d2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* ── Game Container ── */
+#game-container {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+}
+
+#gameCanvas {
+  display: block;
+  width: 1280px;
+  height: 720px;
+}
+
+/* ── HUD ── */
+#hud {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 18px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.hud-panel {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  border: 2px solid rgba(255, 179, 217, 0.5);
+  border-radius: 24px;
+  padding: 6px 20px;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  min-width: 80px;
+  justify-content: center;
+}
+
+.hud-icon {
+  font-size: 17px;
+}
+
+/* ── Screens ── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.screen.overlay {
+  background: rgba(8, 18, 68, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.screen.hidden {
+  display: none;
+}
+
+.screen-content {
+  text-align: center;
+  color: #fff;
+  padding: 44px 48px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 2px solid rgba(255, 179, 217, 0.35);
+  border-radius: 32px;
+  backdrop-filter: blur(10px);
+  max-width: 520px;
+  width: 90%;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.4), 0 0 80px rgba(255, 107, 157, 0.1);
+}
+
+.screen-content.compact {
+  padding: 36px 44px;
+}
+
+/* ── Title ── */
+.game-title {
+  font-size: 54px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.title-wave {
+  background: linear-gradient(90deg, #00ced1, #40e0d0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 30px;
+  display: block;
+  animation: titleFloat 3s ease-in-out infinite;
+}
+
+.title-main {
+  background: linear-gradient(90deg, #ff6b9d, #ffb3d9, #ff6b9d);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3.5s linear infinite;
+}
+
+.title-sub {
+  font-size: 26px;
+  background: linear-gradient(90deg, #ffd700, #fff44f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title-deco {
+  font-size: 22px;
+  margin-bottom: 18px;
+  animation: floatDeco 2.5s ease-in-out infinite;
+  letter-spacing: 4px;
+}
+
+.hs-display {
+  font-size: 15px;
+  color: #ffd700;
+  margin-bottom: 26px;
+  opacity: 0.9;
+}
+
+/* ── Buttons ── */
+.button-group {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 36px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  letter-spacing: 0.5px;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff6b9d, #ff3d7f);
+  color: #fff;
+  box-shadow: 0 4px 22px rgba(255, 61, 127, 0.5);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 7px 30px rgba(255, 61, 127, 0.7);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #00ced1, #40e0d0);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(0, 206, 209, 0.45);
+}
+
+.btn-secondary:hover {
+  box-shadow: 0 7px 26px rgba(0, 206, 209, 0.65);
+}
+
+.btn-bounce {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+/* ── Controls hint ── */
+.controls-hint {
+  font-size: 13px;
+  opacity: 0.65;
+  color: #b0e8ff;
+  line-height: 1.6;
+}
+
+kbd {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-family: monospace;
+  font-size: 12px;
+  color: #fff;
+}
+
+/* ── Game Over ── */
+.gameover-title {
+  font-size: 50px;
+  background: linear-gradient(90deg, #ff6b9d, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 22px;
+}
+
+.stats-grid {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.stat-item {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 14px 22px;
+  min-width: 84px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #90ccee;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+.new-best {
+  color: #ffd700;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+h2 {
+  font-size: 38px;
+  margin-bottom: 26px;
+  background: linear-gradient(90deg, #ff6b9d, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Animations ── */
+@keyframes titleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes floatDeco {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-9px) rotate(2deg); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+/* ── Responsive scaling ── */
+@media (max-width: 1300px) {
+  body {
+    align-items: flex-start;
+    overflow: auto;
+  }
+  #game-container,
+  #gameCanvas {
+    width: 100vw;
+    height: calc(100vw * 0.5625);
+  }
+}
