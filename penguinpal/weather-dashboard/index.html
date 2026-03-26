@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Background -->
+  <div id="bg-image" class="bg-image" role="img" aria-label="City background"></div>
+  <div class="bg-overlay"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo" aria-label="Weather Dashboard">
+      <span class="logo-icon">&#9729;</span>
+      <span class="logo-text">Weather</span>
+    </div>
+
+    <div class="search-wrapper" role="search">
+      <input
+        type="text"
+        id="city-input"
+        class="search-input"
+        placeholder="Search city..."
+        autocomplete="off"
+        aria-label="Enter city name"
+      />
+      <button id="search-btn" class="search-btn" aria-label="Search weather">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <ul id="recent-searches" class="recent-searches" aria-label="Recent searches"></ul>
+    </div>
+
+    <div class="unit-toggle" role="group" aria-label="Temperature unit">
+      <button id="unit-c" class="unit-btn active" aria-pressed="true">°C</button>
+      <button id="unit-f" class="unit-btn" aria-pressed="false">°F</button>
+    </div>
+  </header>
+
+  <!-- Loading overlay -->
+  <div id="loading" class="loading hidden" aria-live="polite" aria-label="Loading weather data">
+    <div class="spinner"></div>
+    <p>Fetching weather...</p>
+  </div>
+
+  <!-- Error banner -->
+  <div id="error-banner" class="error-banner hidden" role="alert" aria-live="assertive"></div>
+
+  <!-- Main content -->
+  <main id="main-content" class="main-content hidden">
+
+    <!-- Hero: Current Weather -->
+    <section class="hero" aria-label="Current weather">
+      <div class="hero-left">
+        <h1 id="city-name" class="city-name"></h1>
+        <p id="current-datetime" class="current-datetime"></p>
+        <p id="weather-desc" class="weather-desc"></p>
+        <div class="temp-display">
+          <img id="weather-icon" class="weather-icon" src="" alt="" />
+          <span id="temperature" class="temperature"></span>
+        </div>
+        <p id="feels-like" class="feels-like"></p>
+      </div>
+    </section>
+
+    <!-- Details grid -->
+    <section class="details-grid" aria-label="Weather details">
+      <!-- Humidity -->
+      <div class="card" aria-label="Humidity">
+        <div class="card-icon">&#128167;</div>
+        <div class="card-label">Humidity</div>
+        <div id="humidity" class="card-value">--</div>
+      </div>
+      <!-- Pressure -->
+      <div class="card" aria-label="Pressure">
+        <div class="card-icon">&#9935;</div>
+        <div class="card-label">Pressure</div>
+        <div id="pressure" class="card-value">--</div>
+      </div>
+      <!-- Visibility -->
+      <div class="card" aria-label="Visibility">
+        <div class="card-icon">&#128065;</div>
+        <div class="card-label">Visibility</div>
+        <div id="visibility" class="card-value">--</div>
+      </div>
+      <!-- Clouds -->
+      <div class="card" aria-label="Cloud coverage">
+        <div class="card-icon">&#9925;</div>
+        <div class="card-label">Cloud Cover</div>
+        <div id="clouds" class="card-value">--</div>
+      </div>
+      <!-- Sunrise/Sunset -->
+      <div class="card" aria-label="Sunrise and sunset">
+        <div class="card-icon">&#127774;</div>
+        <div class="card-label">Sunrise / Sunset</div>
+        <div id="sunrise-sunset" class="card-value">--</div>
+      </div>
+      <!-- Dew Point -->
+      <div class="card" aria-label="Dew point">
+        <div class="card-icon">&#127783;</div>
+        <div class="card-label">Dew Point</div>
+        <div id="dew-point" class="card-value">--</div>
+      </div>
+    </section>
+
+    <!-- Wind -->
+    <section class="wind-section" aria-label="Wind information">
+      <h2 class="section-title">Wind</h2>
+      <div class="wind-inner">
+        <div class="compass-wrapper" aria-hidden="true">
+          <div class="compass">
+            <span class="compass-label n">N</span>
+            <span class="compass-label e">E</span>
+            <span class="compass-label s">S</span>
+            <span class="compass-label w">W</span>
+            <div id="compass-needle" class="compass-needle"></div>
+          </div>
+        </div>
+        <div class="wind-stats">
+          <div class="card">
+            <div class="card-label">Speed</div>
+            <div id="wind-speed" class="card-value">--</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Direction</div>
+            <div id="wind-dir" class="card-value">--</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Gusts</div>
+            <div id="wind-gust" class="card-value">--</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Beaufort</div>
+            <div id="wind-beaufort" class="card-value">--</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UV & AQI row -->
+    <section class="uv-aqi-row" aria-label="UV Index and Air Quality">
+      <!-- UV Index -->
+      <div class="uv-card card">
+        <h2 class="section-title">UV Index</h2>
+        <div id="uv-value" class="uv-value">--</div>
+        <div id="uv-category" class="uv-category"></div>
+        <div class="uv-bar-track" aria-hidden="true">
+          <div id="uv-bar" class="uv-bar"></div>
+        </div>
+        <p id="uv-advice" class="uv-advice"></p>
+      </div>
+      <!-- AQI -->
+      <div class="aqi-card card">
+        <h2 class="section-title">Air Quality</h2>
+        <div id="aqi-value" class="aqi-value">--</div>
+        <div id="aqi-category" class="aqi-category"></div>
+        <div id="aqi-pollutants" class="aqi-pollutants"></div>
+        <p id="aqi-advice" class="aqi-advice"></p>
+      </div>
+    </section>
+
+    <!-- Sunburn Risk -->
+    <section class="sunburn-section card" aria-label="Sunburn risk calculator">
+      <h2 class="section-title">Sunburn Risk</h2>
+      <div class="sunburn-inner">
+        <div class="sunburn-inputs">
+          <label for="skin-type">Skin type:</label>
+          <select id="skin-type" class="skin-select" aria-label="Select your skin type">
+            <option value="1">Type I – Very Fair</option>
+            <option value="2" selected>Type II – Fair</option>
+            <option value="3">Type III – Medium</option>
+            <option value="4">Type IV – Olive</option>
+            <option value="5">Type V – Brown</option>
+            <option value="6">Type VI – Dark</option>
+          </select>
+        </div>
+        <div class="sunburn-results">
+          <div class="card">
+            <div class="card-label">Time to Burn</div>
+            <div id="burn-time" class="card-value">--</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Recommended SPF</div>
+            <div id="spf" class="card-value">--</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Risk Level</div>
+            <div id="burn-risk" class="card-value">--</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Weather Alerts -->
+    <section id="alerts-section" class="alerts-section hidden" aria-label="Weather alerts" aria-live="polite">
+      <h2 class="section-title alert-title">&#9888; Weather Alerts</h2>
+      <div id="alerts-list" class="alerts-list"></div>
+    </section>
+
+    <!-- Hourly Forecast -->
+    <section class="forecast-section" aria-label="Hourly forecast">
+      <h2 class="section-title">Hourly Forecast</h2>
+      <div id="hourly-forecast" class="hourly-forecast" role="list"></div>
+    </section>
+
+    <!-- Daily Forecast -->
+    <section class="forecast-section" aria-label="7-day forecast">
+      <h2 class="section-title">7-Day Forecast</h2>
+      <div id="daily-forecast" class="daily-forecast" role="list"></div>
+    </section>
+
+    <!-- Precipitation -->
+    <section class="precip-section" aria-label="Precipitation">
+      <h2 class="section-title">Precipitation</h2>
+      <div class="details-grid" style="margin:0">
+        <div class="card">
+          <div class="card-label">1h Rain</div>
+          <div id="rain-1h" class="card-value">--</div>
+        </div>
+        <div class="card">
+          <div class="card-label">1h Snow</div>
+          <div id="snow-1h" class="card-value">--</div>
+        </div>
+        <div class="card">
+          <div class="card-label">POP (next hour)</div>
+          <div id="precip-pop" class="card-value">--</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Data: <a href="https://openweathermap.org/" target="_blank" rel="noopener noreferrer" class="footer-link">OpenWeatherMap</a> &amp; <a href="https://unsplash.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Unsplash</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
