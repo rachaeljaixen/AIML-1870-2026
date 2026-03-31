@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEON COSMOS | NASA Space Dashboard</title>
+  <link rel="stylesheet" href="neon-cosmos.css">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <header role="banner">
+    <div class="header-content">
+      <h1 class="glitch neon-text" data-text="▼ NEON COSMOS ▼" aria-label="Neon Cosmos NASA Dashboard">
+        ▼ NEON COSMOS ▼
+      </h1>
+      <div class="header-controls">
+        <button id="rave-toggle" class="btn-neon" aria-pressed="false" aria-label="Toggle Rave Mode">RAVE MODE</button>
+        <button id="sound-toggle" class="btn-neon" aria-pressed="false" aria-label="Toggle sound effects">🔊 SOUND</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-nav" role="tablist" aria-label="Dashboard sections">
+    <button class="tab-btn active" data-tab="threat" role="tab" aria-selected="true"
+            aria-controls="tab-threat" id="btn-threat">⚠️ THREAT MATRIX</button>
+    <button class="tab-btn" data-tab="encounters" role="tab" aria-selected="false"
+            aria-controls="tab-encounters" id="btn-encounters">🌠 CLOSE ENCOUNTERS</button>
+    <button class="tab-btn" data-tab="cosmic" role="tab" aria-selected="false"
+            aria-controls="tab-cosmic" id="btn-cosmic">🌌 COSMIC EYE</button>
+    <button class="tab-btn" data-tab="orbital" role="tab" aria-selected="false"
+            aria-controls="tab-orbital" id="btn-orbital">🌍 ORBITAL VIEW</button>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- TAB 1: THREAT MATRIX -->
+    <section id="tab-threat" class="tab-content active" role="tabpanel" aria-labelledby="btn-threat">
+      <div class="metric-row">
+        <div class="metric-card danger-card">
+          <div class="metric-label">⚠ ACTIVE THREATS</div>
+          <div class="metric-value" id="threat-count" aria-live="polite">--</div>
+          <div class="metric-sub" id="threat-torino">Highest Torino Scale: --</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">OBJECTS TRACKED</div>
+          <div class="metric-value cyan" id="threat-total" aria-live="polite">--</div>
+          <div class="metric-sub">In Sentry database</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">HIGHEST PALERMO</div>
+          <div class="metric-value magenta" id="threat-highest" aria-live="polite">--</div>
+          <div class="metric-sub">Risk assessment score</div>
+        </div>
+      </div>
+
+      <div class="panel neon-border">
+        <div class="panel-title">TOP RISK OBJECTS</div>
+        <div class="table-wrapper">
+          <table id="threat-table" aria-label="Top risk asteroid objects">
+            <thead>
+              <tr>
+                <th scope="col">OBJECT</th>
+                <th scope="col">IMPACT PROB</th>
+                <th scope="col">PALERMO</th>
+                <th scope="col">TORINO</th>
+                <th scope="col">YEAR RANGE</th>
+                <th scope="col">DIAMETER (m)</th>
+                <th scope="col">RISK LEVEL</th>
+              </tr>
+            </thead>
+            <tbody id="threat-tbody">
+              <tr><td colspan="7" class="loading-cell"><div class="signal-lost">ACQUIRING SIGNAL...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel neon-border">
+        <div class="panel-title">IMPACT TIMELINE FILTER</div>
+        <div class="timeline-container">
+          <span class="timeline-label">2024</span>
+          <input type="range" id="timeline-slider" min="2024" max="2100" value="2100"
+                 class="neon-slider" aria-label="Filter by impact year">
+          <span class="timeline-label" id="timeline-end">2100</span>
+        </div>
+        <div class="timeline-info">
+          Showing objects with possible impacts through <span id="timeline-year">2100</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CLOSE ENCOUNTERS -->
+    <section id="tab-encounters" class="tab-content" role="tabpanel" aria-labelledby="btn-encounters" hidden>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">🌠 NEXT 60 DAYS</div>
+          <div class="metric-value cyan" id="encounter-count" aria-live="polite">--</div>
+          <div class="metric-sub">Close approaches</div>
+        </div>
+        <div class="metric-card danger-card">
+          <div class="metric-label">NEXT ENCOUNTER IN</div>
+          <div class="metric-value countdown" id="next-countdown" aria-live="polite">--:--:--</div>
+          <div class="metric-sub" id="next-object">Calculating...</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">CLOSEST APPROACH</div>
+          <div class="metric-value green" id="closest-dist" aria-live="polite">-- LD</div>
+          <div class="metric-sub" id="closest-name">--</div>
+        </div>
+      </div>
+
+      <div class="encounters-grid">
+        <div class="panel neon-border encounters-list-panel">
+          <div class="panel-title">UPCOMING ENCOUNTERS</div>
+          <div id="encounters-list" class="encounters-list" role="list" aria-live="polite">
+            <div class="signal-lost">ACQUIRING SIGNAL...</div>
+          </div>
+        </div>
+
+        <div class="encounters-right">
+          <div class="panel neon-border">
+            <div class="panel-title">APPROACH DISTANCE MAP</div>
+            <div class="distance-viz">
+              <svg viewBox="0 0 300 300" id="distance-svg" role="img"
+                   aria-label="Visual map of asteroid approach distances relative to Earth">
+                <title>Approach Distance Visualization</title>
+                <circle cx="150" cy="150" r="114" fill="none" stroke="#ff00ff" stroke-width="0.5" stroke-dasharray="3,4" opacity="0.25"/>
+                <circle cx="150" cy="150" r="76" fill="none" stroke="#ffff00" stroke-width="0.5" stroke-dasharray="3,4" opacity="0.35"/>
+                <circle cx="150" cy="150" r="38" fill="none" stroke="#39ff14" stroke-width="0.8" stroke-dasharray="3,4" opacity="0.5"/>
+                <text x="193" y="153" fill="#39ff14" font-size="8" font-family="monospace">1 LD</text>
+                <text x="231" y="153" fill="#ffff00" font-size="8" font-family="monospace">2 LD</text>
+                <text x="269" y="153" fill="#ff00ff" font-size="8" font-family="monospace">3 LD</text>
+                <circle cx="150" cy="150" r="6" fill="#00f3ff" style="filter:drop-shadow(0 0 6px #00f3ff)"/>
+                <text x="150" y="137" text-anchor="middle" fill="#00f3ff" font-size="8" font-family="monospace">EARTH</text>
+                <g id="approach-dots"></g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="panel neon-border">
+            <div class="panel-title">SPEED LEADERBOARD</div>
+            <div id="speed-board" aria-live="polite">
+              <div class="signal-lost">LOADING...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: COSMIC EYE -->
+    <section id="tab-cosmic" class="tab-content" role="tabpanel" aria-labelledby="btn-cosmic" hidden>
+      <div class="cosmic-controls" role="toolbar" aria-label="APOD navigation">
+        <button class="btn-neon" id="apod-prev" aria-label="Previous day">◀ PREV</button>
+        <input type="date" id="apod-date" class="neon-date" aria-label="Select date for astronomy picture">
+        <button class="btn-neon" id="apod-random" aria-label="Random date">✦ RANDOM</button>
+        <button class="btn-neon" id="apod-today" aria-label="Today's picture">◎ TODAY</button>
+        <button class="btn-neon" id="apod-next" aria-label="Next day">NEXT ▶</button>
+      </div>
+
+      <div class="cosmic-grid">
+        <div class="cosmic-image-panel panel rainbow-border">
+          <div id="apod-media-container">
+            <div class="signal-lost">INITIALIZING COSMIC EYE...</div>
+          </div>
+        </div>
+
+        <div class="cosmic-meta panel neon-border">
+          <div class="apod-title glitch" id="apod-title" data-text="LOADING...">LOADING...</div>
+          <div class="apod-meta-row">
+            <span class="apod-date-display" id="apod-date-display">--</span>
+            <span class="apod-type-badge" id="apod-type"></span>
+          </div>
+          <div class="apod-copyright" id="apod-copyright"></div>
+          <div class="apod-explanation-label">TRANSMISSION:</div>
+          <div class="apod-explanation" id="apod-explanation" tabindex="0">
+            <div class="signal-lost">AWAITING TRANSMISSION...</div>
+          </div>
+          <a id="apod-hd-link" class="btn-neon hd-btn pulse-btn" href="#"
+             target="_blank" rel="noopener noreferrer"
+             aria-label="Download full HD image" style="display:none">
+            █████ DOWNLOAD HD █████
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: ORBITAL VIEW -->
+    <section id="tab-orbital" class="tab-content" role="tabpanel" aria-labelledby="btn-orbital" hidden>
+      <div class="orbital-layout">
+        <div class="orbital-canvas-wrap panel rainbow-border">
+          <canvas id="earth-canvas" aria-label="Interactive 3D Earth with asteroid orbit visualization"></canvas>
+          <div class="orbital-hint">DRAG to rotate · SCROLL to zoom</div>
+        </div>
+
+        <div class="orbital-sidebar">
+          <div class="panel neon-border orbital-legend">
+            <div class="panel-title">ORBIT LEGEND</div>
+            <div class="legend-items">
+              <div class="legend-item"><span class="legend-dot" style="background:#ff00ff;box-shadow:0 0 6px #ff00ff"></span>&lt; 1 LD — CRITICAL</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#ffff00;box-shadow:0 0 6px #ffff00"></span>1–2 LD — CLOSE</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#39ff14;box-shadow:0 0 6px #39ff14"></span>&gt; 2 LD — DISTANT</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#00f3ff;box-shadow:0 0 6px #00f3ff"></span>EARTH</div>
+            </div>
+          </div>
+
+          <div class="panel neon-border">
+            <div class="panel-title">CLOSEST OBJECTS</div>
+            <div id="orbital-list" aria-live="polite">
+              <div class="signal-lost">LOADING ORBITS...</div>
+            </div>
+          </div>
+
+          <div class="panel neon-border orbital-controls-panel">
+            <div class="panel-title">CONTROLS</div>
+            <div class="orbital-ctrl-row">
+              <label class="ctrl-label">ROTATION</label>
+              <input type="range" id="rot-speed" min="0" max="20" value="3"
+                     class="neon-slider" aria-label="Rotation speed">
+            </div>
+            <div class="orbital-ctrl-row">
+              <button class="btn-neon" id="earth-pause">⏸ PAUSE</button>
+              <button class="btn-neon" id="earth-reset">↺ RESET</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer role="contentinfo">
+    <span>Last Updated: <time id="last-updated">--</time></span>
+    <span class="api-status" id="api-status" aria-live="polite">● API STATUS: CONNECTING</span>
+    <span>NEON COSMOS v1.0</span>
+  </footer>
+
+  <script src="neon-cosmos.js"></script>
+</body>
+</html>
