@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Safety Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="drug-safety.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon" aria-hidden="true">⬡</span>
+                <span class="logo-text">Drug Safety <span class="logo-accent">Explorer</span></span>
+            </div>
+            <nav class="header-nav" aria-label="Site navigation">
+                <button class="nav-btn" id="btn-onboarding">Tutorial</button>
+                <button class="nav-btn" id="btn-about">About Data</button>
+                <button class="nav-btn" id="btn-glossary">Glossary</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Disclaimer Banner -->
+    <div class="disclaimer-banner" id="disclaimer-banner" role="alert">
+        <div class="disclaimer-inner">
+            <span class="disclaimer-icon" aria-hidden="true">⚠</span>
+            <p class="disclaimer-text">
+                <strong>EDUCATIONAL PURPOSES ONLY</strong> — This tool is for informational use only. It is <strong>NOT</strong> medical advice.
+                Data comes from voluntary reports and may be incomplete. Always consult qualified healthcare professionals before making medical decisions.
+            </p>
+            <button class="disclaimer-close" id="btn-close-disclaimer" aria-label="Dismiss disclaimer">✕</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main">
+
+        <!-- Search Section -->
+        <section class="search-section" id="search-section">
+            <div class="search-container">
+                <h1 class="search-heading">Explore Drug Safety Data</h1>
+                <p class="search-subheading">Search FDA adverse events, recalls, and official labeling</p>
+
+                <div class="search-bar-wrapper">
+                    <div class="search-bar">
+                        <label for="drug-search-input" class="sr-only">Search drug name</label>
+                        <input
+                            type="text"
+                            id="drug-search-input"
+                            class="search-input"
+                            placeholder="Brand or generic name (e.g., ibuprofen, Tylenol, metformin)..."
+                            autocomplete="off"
+                            spellcheck="false"
+                            aria-describedby="search-hint"
+                        >
+                        <button class="search-btn" id="btn-search" aria-label="Search">
+                            <span class="search-btn-text">SEARCH</span>
+                            <span class="search-btn-icon" aria-hidden="true">⌕</span>
+                        </button>
+                    </div>
+                    <p id="search-hint" class="search-hint">Press Enter or click Search · Add up to 3 drugs to compare</p>
+                    <div class="search-history" id="search-history" hidden role="listbox" aria-label="Recent searches"></div>
+                </div>
+
+                <!-- Active drug tags -->
+                <div class="drug-tags-area" id="drug-tags-area" hidden>
+                    <div class="drug-tags" id="drug-tags" role="list" aria-label="Currently loaded drugs"></div>
+                    <button class="btn-add-drug" id="btn-add-drug" hidden>
+                        + Add Drug to Compare
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Empty State -->
+        <section class="empty-state" id="empty-state" aria-label="Welcome screen">
+            <div class="empty-state-content">
+                <div class="empty-icon" aria-hidden="true">💊</div>
+                <h2 class="empty-title">What would you like to explore?</h2>
+                <div class="empty-features">
+                    <div class="feature-card">
+                        <span class="feature-icon" aria-hidden="true">📊</span>
+                        <h3>Adverse Events</h3>
+                        <p>View reported side effects, frequency, and severity from FDA FAERS data</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon" aria-hidden="true">⚠️</span>
+                        <h3>Official Warnings</h3>
+                        <p>See black box warnings, contraindications, and official labeling information</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon" aria-hidden="true">🔄</span>
+                        <h3>Recall History</h3>
+                        <p>Track FDA enforcement actions and recall severity classifications</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon" aria-hidden="true">⚖️</span>
+                        <h3>Drug Comparison</h3>
+                        <p>Compare safety profiles of up to 3 drugs side-by-side</p>
+                    </div>
+                </div>
+                <div class="example-searches">
+                    <p class="example-label">Try searching for:</p>
+                    <div class="example-tags">
+                        <button class="example-tag" data-drug="ibuprofen">ibuprofen</button>
+                        <button class="example-tag" data-drug="metformin">metformin</button>
+                        <button class="example-tag" data-drug="lisinopril">lisinopril</button>
+                        <button class="example-tag" data-drug="atorvastatin">atorvastatin</button>
+                        <button class="example-tag" data-drug="omeprazole">omeprazole</button>
+                    </div>
+                </div>
+                <p class="empty-disclaimer">
+                    Data sourced from <a href="https://open.fda.gov" target="_blank" rel="noopener noreferrer">OpenFDA</a>.
+                    Educational use only — not medical advice.
+                </p>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <section class="loading-state" id="loading-state" hidden aria-live="polite" aria-label="Loading">
+            <div class="loading-container">
+                <div class="loading-spinner" aria-hidden="true">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                </div>
+                <p class="loading-text" id="loading-text">Searching FDA database...</p>
+                <div class="skeleton-cards" aria-hidden="true">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Error State -->
+        <section class="error-state" id="error-state" hidden role="alert">
+            <div class="error-container">
+                <div class="error-icon" aria-hidden="true">⚡</div>
+                <h2 class="error-title" id="error-title">Something went wrong</h2>
+                <p class="error-message" id="error-message"></p>
+                <div class="error-suggestions" id="error-suggestions" hidden></div>
+                <button class="btn-primary" id="btn-try-again">Try Again</button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="results-section" hidden>
+            <div class="results-inner">
+                <!-- Data Quality Banner -->
+                <div class="data-quality-banner" id="data-quality-banner" role="status" aria-live="polite"></div>
+
+                <!-- Tabs -->
+                <div class="tabs-wrapper">
+                    <nav class="tabs" role="tablist" aria-label="Drug data sections" id="tabs-nav">
+                        <button class="tab active" role="tab" data-tab="overview" aria-selected="true">Overview</button>
+                        <button class="tab" role="tab" data-tab="adverse-events" aria-selected="false">Adverse Events</button>
+                        <button class="tab" role="tab" data-tab="warnings" aria-selected="false">Warnings</button>
+                        <button class="tab" role="tab" data-tab="recalls" aria-selected="false">Recalls</button>
+                    </nav>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="tab-content" role="tabpanel"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-attribution">
+                <p>This product uses publicly available data from the U.S. Food and Drug Administration (FDA). FDA does not endorse this product.</p>
+                <p>Data Source: <a href="https://open.fda.gov" target="_blank" rel="noopener noreferrer">OpenFDA API</a> · All API calls are client-side · No user data collected beyond browser localStorage</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://open.fda.gov/apis/" target="_blank" rel="noopener noreferrer">API Docs</a>
+                <a href="https://open.fda.gov/apis/drug/" target="_blank" rel="noopener noreferrer">Drug APIs</a>
+                <button class="footer-link-btn" id="footer-about">About This Tool</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Tooltip (positioned by JS) -->
+    <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+
+    <!-- About Modal -->
+    <div class="modal-overlay" id="modal-about" hidden role="dialog" aria-modal="true" aria-labelledby="about-title">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="about-title" class="modal-title">About This Data</h2>
+                <button class="modal-close" aria-label="Close modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="about-section">
+                    <h3>What is OpenFDA?</h3>
+                    <p>OpenFDA is a public API from the U.S. Food and Drug Administration that provides access to FDA datasets including adverse events, drug labeling, and recall enforcement reports.</p>
+                </div>
+                <div class="about-section">
+                    <h3>Where does the data come from?</h3>
+                    <p><strong>Adverse Events:</strong> The FDA Adverse Event Reporting System (FAERS) — a voluntary database where patients, healthcare providers, and manufacturers report drug side effects.</p>
+                    <p><strong>Drug Labeling:</strong> Official package insert information submitted by manufacturers to the FDA.</p>
+                    <p><strong>Recalls:</strong> FDA enforcement reports for products removed from the market.</p>
+                </div>
+                <div class="about-section">
+                    <h3>Key Limitations</h3>
+                    <ul>
+                        <li><strong>Voluntary reporting:</strong> Most adverse events are never reported — actual rates may be much higher</li>
+                        <li><strong>Correlation, not causation:</strong> A reported event doesn't mean the drug caused it</li>
+                        <li><strong>Data quality varies:</strong> Reports may be incomplete, duplicated, or inaccurate</li>
+                        <li><strong>Data lag:</strong> Recent events may not yet appear in the database</li>
+                        <li><strong>Not adjusted for exposure:</strong> Popular drugs will naturally have more reports</li>
+                    </ul>
+                </div>
+                <div class="about-section">
+                    <h3>How to interpret results</h3>
+                    <p>Use this tool to get a general picture of reported safety information. Higher report counts do not necessarily mean a drug is more dangerous — they may reflect wider use or better reporting culture. Always discuss medication decisions with your healthcare provider.</p>
+                </div>
+                <div class="about-section">
+                    <h3>Report adverse events to FDA</h3>
+                    <p>You can report adverse events through the <a href="https://www.accessdata.fda.gov/scripts/medwatch/" target="_blank" rel="noopener noreferrer">FDA MedWatch Safety Reporting Portal</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glossary Modal -->
+    <div class="modal-overlay" id="modal-glossary" hidden role="dialog" aria-modal="true" aria-labelledby="glossary-title">
+        <div class="modal modal-wide">
+            <div class="modal-header">
+                <h2 id="glossary-title" class="modal-title">Glossary</h2>
+                <button class="modal-close" aria-label="Close modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="glossary-search" id="glossary-search" placeholder="Search terms..." aria-label="Search glossary terms">
+                <div class="glossary-list" id="glossary-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div class="modal-overlay" id="modal-onboarding" hidden role="dialog" aria-modal="true" aria-labelledby="onboarding-label">
+        <div class="modal modal-onboarding">
+            <div class="modal-body">
+                <span id="onboarding-label" class="sr-only">Tutorial walkthrough</span>
+                <div class="onboarding-steps" id="onboarding-steps"></div>
+                <div class="onboarding-nav">
+                    <button class="btn-secondary" id="btn-onboarding-skip">Skip</button>
+                    <div class="onboarding-dots" id="onboarding-dots" aria-hidden="true"></div>
+                    <button class="btn-primary" id="btn-onboarding-next">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="drug-safety.js"></script>
+</body>
+</html>
