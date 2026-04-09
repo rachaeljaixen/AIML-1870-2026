@@ -3,6 +3,8 @@
 const el = id => document.getElementById(id);
 
 const dom = {
+  apiKeyInput:    el('apiKeyInput'),
+  keyStatus:      el('keyStatus'),
   productName:    el('productName'),
   productNameErr: el('productNameErr'),
   category:       el('category'),
@@ -23,24 +25,41 @@ const dom = {
   closeErr:       el('closeErr')
 };
 
+// ── API Key ─────────────────────────────────────────────────
+
+function initKey() {
+  const saved = localStorage.getItem('prg_openai_key');
+  if (saved) { dom.apiKeyInput.value = saved; setKeyStatus(true); }
+
+  dom.apiKeyInput.addEventListener('input', () => {
+    const k = dom.apiKeyInput.value.trim();
+    if (k) { localStorage.setItem('prg_openai_key', k); setKeyStatus(true); }
+    else   { localStorage.removeItem('prg_openai_key');  setKeyStatus(false); }
+  });
+}
+
+function setKeyStatus(ok) {
+  dom.keyStatus.textContent = ok ? '✓' : '';
+  dom.keyStatus.style.color = ok ? 'var(--green)' : '';
+}
+
+function getApiKey() {
+  return dom.apiKeyInput.value.trim();
+}
+
 // ── Loading ─────────────────────────────────────────────────
 
 function setLoading(on) {
-  if (on) {
-    dom.generateBtn.disabled  = true;
-    dom.generateBtn.textContent = '⟳ Generating…';
-    dom.generateBtn.classList.add('btn-loading');
-  } else {
-    dom.generateBtn.disabled  = false;
-    dom.generateBtn.textContent = '⚡ Generate Review';
-    dom.generateBtn.classList.remove('btn-loading');
-  }
+  dom.generateBtn.disabled    = on;
+  dom.generateBtn.textContent = on ? '⟳ Generating…' : '⚡ Generate Review';
+  if (on) dom.generateBtn.classList.add('btn-loading');
+  else    dom.generateBtn.classList.remove('btn-loading');
 }
 
 // ── Validation ──────────────────────────────────────────────
 
 function clearValidation() {
-  [dom.productName, dom.category].forEach(input => input.classList.remove('invalid'));
+  [dom.productName, dom.category].forEach(i => i.classList.remove('invalid'));
   dom.productNameErr.textContent = '';
   dom.categoryErr.textContent    = '';
 }
@@ -48,6 +67,12 @@ function clearValidation() {
 function validateForm() {
   clearValidation();
   let valid = true;
+
+  if (!getApiKey()) {
+    showError('Please enter your OpenAI API key.');
+    dom.apiKeyInput.focus();
+    return false;
+  }
 
   if (!dom.productName.value.trim()) {
     dom.productName.classList.add('invalid');
@@ -77,20 +102,15 @@ async function fetchWikipediaImage(productName) {
 }
 
 function makePlaceholder(productName) {
-  return `<div class="product-image-placeholder">
-    <span class="placeholder-label">${productName}</span>
-  </div>`;
+  return `<div class="product-image-placeholder"><span class="placeholder-label">${productName}</span></div>`;
 }
 
 async function showOutput(markdownText, meta, productName) {
   dom.outputCard.style.display = 'block';
   dom.outputMeta.textContent   = meta || '';
+  dom.outputBody.innerHTML     = '<p class="output-placeholder">Loading image…</p>';
 
-  // Show loading state while fetching image
-  dom.outputBody.innerHTML = '<p class="output-placeholder">Generating your review…</p>';
-
-  const wikiUrl = await fetchWikipediaImage(productName);
-
+  const wikiUrl   = await fetchWikipediaImage(productName);
   const imageHtml = wikiUrl
     ? `<div class="product-image-wrap"><img class="product-image" src="${wikiUrl}" alt="${productName}" onerror="this.parentElement.outerHTML='${makePlaceholder(productName).replace(/'/g, "\\'")}'" ></div>`
     : makePlaceholder(productName);
@@ -101,13 +121,13 @@ async function showOutput(markdownText, meta, productName) {
 
 function showOutputLoading() {
   dom.outputCard.style.display = 'block';
-  dom.outputBody.innerHTML = '<p class="output-placeholder">Generating your review…</p>';
-  dom.outputMeta.textContent = '';
+  dom.outputBody.innerHTML     = '<p class="output-placeholder">Generating your review…</p>';
+  dom.outputMeta.textContent   = '';
 }
 
 function hideOutput() {
   dom.outputCard.style.display = 'none';
-  dom.outputBody.innerHTML = '';
+  dom.outputBody.innerHTML     = '';
 }
 
 // ── Error Toast ─────────────────────────────────────────────
@@ -123,12 +143,11 @@ function hideError() {
   dom.errToast.style.display = 'none';
 }
 
-// ── Copy to Clipboard ────────────────────────────────────────
+// ── Copy ────────────────────────────────────────────────────
 
 async function copyOutput() {
-  const text = dom.outputBody.innerText;
   try {
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(dom.outputBody.innerText);
     const orig = dom.copyBtn.textContent;
     dom.copyBtn.textContent = '✓ Copied!';
     setTimeout(() => { dom.copyBtn.textContent = orig; }, 2000);

@@ -15,13 +15,14 @@ async function handleGenerate() {
   const style       = dom.style.value;
   const model       = dom.model.value;
   const comments    = dom.comments.value.trim();
+  const apiKey      = getApiKey();
 
   hideError();
   setLoading(true);
   showOutputLoading();
 
   try {
-    const review = await generateReview({ productName, category, length, style, comments, model });
+    const review = await generateReview({ productName, category, length, style, comments, model, apiKey });
     const meta   = `${productName} · ${style} · ${STYLE_LABELS[length]} · ${model}`;
     showOutput(review, meta, productName);
   } catch (err) {
@@ -44,7 +45,9 @@ function handleClear() {
   hideError();
 }
 
-// ── Event Bindings ──────────────────────────────────────────
+// ── Init & Bindings ─────────────────────────────────────────
+
+initKey();
 
 dom.generateBtn.addEventListener('click', handleGenerate);
 dom.clearBtn.addEventListener('click', handleClear);
@@ -52,7 +55,6 @@ dom.copyBtn.addEventListener('click', copyOutput);
 dom.newBtn.addEventListener('click', handleClear);
 dom.closeErr.addEventListener('click', hideError);
 
-// Allow Enter in text inputs to trigger generation
 [dom.productName, dom.category].forEach(input => {
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter') handleGenerate();

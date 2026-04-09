@@ -94,6 +94,13 @@ body {
   letter-spacing: 2px;
 }
 
+/* ── API Key Card ── */
+.key-card  { border-color: #2a0040; padding: 14px 24px; }
+.key-row   { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.key-wrap  { display: flex; align-items: center; gap: 8px; }
+.key-input { width: 280px; }
+#keyStatus { font-size: 1rem; }
+
 /* ── Form Grid ── */
 .form-grid {
   display: grid;
