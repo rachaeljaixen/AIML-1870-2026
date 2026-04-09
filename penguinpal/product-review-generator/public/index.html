@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Review Generator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- ── Header ── -->
+    <header class="app-header">
+      <h1 class="neon-text">PRODUCT REVIEW GENERATOR</h1>
+      <p class="header-sub">AI-powered reviews, instantly crafted</p>
+    </header>
+
+    <!-- ── Form ── -->
+    <section class="card form-card" aria-label="Review configuration">
+
+      <div class="form-grid">
+
+        <div class="field-group">
+          <label class="field-label" for="productName">Product Name <span class="required">*</span></label>
+          <input type="text" id="productName" class="neon-input" placeholder="e.g., iPhone 15 Pro" autocomplete="off">
+          <span class="field-error" id="productNameErr"></span>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="category">Product Category <span class="required">*</span></label>
+          <input type="text" id="category" class="neon-input" placeholder="e.g., Electronics, Books, Clothing…" autocomplete="off">
+          <span class="field-error" id="categoryErr"></span>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="length">Review Length <span class="required">*</span></label>
+          <select id="length" class="neon-select">
+            <option value="short">Short (100-150 words)</option>
+            <option value="medium" selected>Medium (200-300 words)</option>
+            <option value="long">Long (400-500 words)</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="style">Writing Style <span class="required">*</span></label>
+          <select id="style" class="neon-select">
+            <option value="Professional">Professional</option>
+            <option value="Casual" selected>Casual</option>
+            <option value="Enthusiastic">Enthusiastic</option>
+            <option value="Critical">Critical</option>
+            <option value="Balanced">Balanced</option>
+            <option value="Technical">Technical</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="model">AI Model</label>
+          <select id="model" class="neon-select">
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="gpt-4o-mini" selected>GPT-4o Mini</option>
+            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="field-group comments-group">
+        <label class="field-label" for="comments">Your Observations <span class="optional">(optional)</span></label>
+        <textarea id="comments" class="neon-ta" rows="4"
+                  placeholder="Share your thoughts about this product — features to highlight, pros/cons, personal experience…"></textarea>
+      </div>
+
+      <div class="action-row">
+        <button class="neon-btn btn-cyan" id="generateBtn">⚡ Generate Review</button>
+        <button class="neon-btn btn-red"  id="clearBtn">🗑️ Clear</button>
+      </div>
+
+    </section>
+
+    <!-- ── Output ── -->
+    <section class="card output-card" id="outputCard" aria-label="Generated review" style="display:none">
+
+      <div class="output-header">
+        <span class="output-label">GENERATED REVIEW</span>
+        <div class="output-actions">
+          <span class="output-meta" id="outputMeta"></span>
+          <button class="neon-btn btn-sm btn-magenta" id="copyBtn" aria-label="Copy review to clipboard">📋 Copy</button>
+          <button class="neon-btn btn-sm btn-yellow"  id="newBtn">+ New Review</button>
+        </div>
+      </div>
+
+      <div id="outputBody" class="output-body" aria-live="polite"></div>
+
+    </section>
+
+  </div>
+
+  <!-- ── Error Toast ── -->
+  <div class="err-toast" id="errToast" role="alert" aria-live="assertive" style="display:none">
+    <span aria-hidden="true">⚠️</span>
+    <span id="errMsg"></span>
+    <button class="toast-close" id="closeErr" aria-label="Dismiss">✕</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

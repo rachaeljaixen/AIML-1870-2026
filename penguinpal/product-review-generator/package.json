@@ -1,0 +1,16 @@
+{
+  "name": "product-review-generator",
+  "version": "1.0.0",
+  "description": "AI-powered product review generator with neon theme",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0",
+    "marked": "^9.0.0"
+  }
+}
