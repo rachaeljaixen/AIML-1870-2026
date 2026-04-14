@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Science Experiment Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+</head>
+<body>
+
+  <!-- Decorative background orbs -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+  </div>
+
+  <!-- ── Header ── -->
+  <header class="app-header">
+    <div class="header-glass"></div>
+    <div class="header-left">
+      <div class="logo-wrap">
+        <span class="logo-icon" aria-hidden="true">⚗️</span>
+      </div>
+      <div class="header-text">
+        <h1>Science Experiment Generator</h1>
+        <p class="header-sub">AI-powered experiments for every grade level</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="model-selector-wrap">
+        <label for="modelSelect">🤖 Model</label>
+        <select id="modelSelect" aria-label="Select AI model">
+          <option value="gpt-4o">GPT-4o ✦ Best</option>
+          <option value="gpt-4o-mini">GPT-4o-mini ⚡ Fast</option>
+          <option value="gpt-4-turbo">GPT-4-turbo</option>
+          <option value="gpt-3.5-turbo">GPT-3.5-turbo 💰</option>
+        </select>
+      </div>
+      <div class="model-info" id="modelInfoBtn" aria-label="Model info" tabindex="0" role="button">
+        <span class="info-icon">ℹ</span>
+        <div class="model-tooltip" role="tooltip">
+          <strong>GPT-4o</strong> — Best quality, grades 6–12<br>
+          <strong>GPT-4o-mini</strong> — Fast & great for K–5<br>
+          <strong>GPT-4-turbo</strong> — High quality, slower<br>
+          <strong>GPT-3.5-turbo</strong> — Budget-friendly
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── API Key Banner ── -->
+  <div class="api-key-banner" id="apiKeyBanner">
+    <div class="api-key-inner">
+      <span class="key-icon">🔑</span>
+      <span>Enter your OpenAI API key to get started</span>
+      <div class="api-key-inputs">
+        <input type="password" id="apiKeyInput" class="api-key-field"
+               placeholder="sk-..." autocomplete="off" spellcheck="false"
+               aria-label="OpenAI API key">
+        <button class="btn btn-amber" id="setKeyBtn">Set Key</button>
+        <label class="btn btn-ghost-amber" for="envFileInput">
+          📄 Load .env
+          <input type="file" id="envFileInput" accept=".env,.txt" style="display:none">
+        </label>
+      </div>
+      <span class="key-status" id="keyStatus" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <!-- ── Main Layout ── -->
+  <main class="main-layout">
+
+    <!-- ── Setup Panel ── -->
+    <section class="panel setup-panel" aria-label="Experiment setup">
+      <h2 class="panel-title">
+        <span class="panel-icon">🧪</span> Experiment Setup
+      </h2>
+
+      <!-- Grade Level -->
+      <div class="form-group">
+        <label for="gradeSelect">📚 Grade Level</label>
+        <select id="gradeSelect" aria-label="Select grade level">
+          <option value="K">🌱 Kindergarten (K)</option>
+          <option value="1">Grade 1</option>
+          <option value="2">Grade 2</option>
+          <option value="3">Grade 3</option>
+          <option value="4">Grade 4</option>
+          <option value="5" selected>Grade 5</option>
+          <option value="6">Grade 6</option>
+          <option value="7">Grade 7</option>
+          <option value="8">Grade 8</option>
+          <option value="9">Grade 9</option>
+          <option value="10">Grade 10</option>
+          <option value="11">Grade 11</option>
+          <option value="12">🎓 Grade 12</option>
+        </select>
+      </div>
+
+      <!-- Selected Materials Tags -->
+      <div class="form-group">
+        <label>🧲 Selected Materials</label>
+        <div class="tags-container" id="selectedTags" aria-label="Selected materials" aria-live="polite">
+          <span class="tags-placeholder">Check items below to add materials…</span>
+        </div>
+      </div>
+
+      <!-- Materials Checklist -->
+      <div class="form-group">
+        <label>📦 Quick-Select Materials</label>
+
+        <div class="material-category" id="cat-kitchen">
+          <button class="category-toggle" aria-expanded="true" aria-controls="mat-kitchen">
+            <span class="cat-icon">🍳</span> Kitchen Supplies
+            <span class="chevron">▾</span>
+          </button>
+          <div class="category-items" id="mat-kitchen">
+            <label class="checkbox-item"><input type="checkbox" value="baking soda"> Baking soda</label>
+            <label class="checkbox-item"><input type="checkbox" value="vinegar"> Vinegar</label>
+            <label class="checkbox-item"><input type="checkbox" value="salt"> Salt</label>
+            <label class="checkbox-item"><input type="checkbox" value="sugar"> Sugar</label>
+            <label class="checkbox-item"><input type="checkbox" value="food coloring"> Food coloring</label>
+            <label class="checkbox-item"><input type="checkbox" value="dish soap"> Dish soap</label>
+            <label class="checkbox-item"><input type="checkbox" value="vegetable oil"> Vegetable oil</label>
+            <label class="checkbox-item"><input type="checkbox" value="cornstarch"> Cornstarch</label>
+            <label class="checkbox-item"><input type="checkbox" value="flour"> Flour</label>
+            <label class="checkbox-item"><input type="checkbox" value="eggs"> Eggs</label>
+            <label class="checkbox-item"><input type="checkbox" value="milk"> Milk</label>
+            <label class="checkbox-item"><input type="checkbox" value="aluminum foil"> Aluminum foil</label>
+            <label class="checkbox-item"><input type="checkbox" value="plastic wrap"> Plastic wrap</label>
+            <label class="checkbox-item"><input type="checkbox" value="rubber bands"> Rubber bands</label>
+            <label class="checkbox-item"><input type="checkbox" value="paper towels"> Paper towels</label>
+            <label class="checkbox-item"><input type="checkbox" value="coffee filters"> Coffee filters</label>
+            <label class="checkbox-item"><input type="checkbox" value="straws"> Straws</label>
+            <label class="checkbox-item"><input type="checkbox" value="plastic bottles"> Plastic bottles</label>
+            <label class="checkbox-item"><input type="checkbox" value="glass jars"> Glass jars</label>
+            <label class="checkbox-item"><input type="checkbox" value="measuring cups"> Measuring cups</label>
+          </div>
+        </div>
+
+        <div class="material-category" id="cat-bathroom">
+          <button class="category-toggle" aria-expanded="false" aria-controls="mat-bathroom">
+            <span class="cat-icon">🚿</span> Bathroom / Cleaning
+            <span class="chevron">▾</span>
+          </button>
+          <div class="category-items" id="mat-bathroom" hidden>
+            <label class="checkbox-item"><input type="checkbox" value="cotton balls"> Cotton balls</label>
+            <label class="checkbox-item"><input type="checkbox" value="q-tips"> Q-tips</label>
+            <label class="checkbox-item"><input type="checkbox" value="toilet paper tubes"> TP tubes</label>
+            <label class="checkbox-item"><input type="checkbox" value="shampoo"> Shampoo</label>
+            <label class="checkbox-item"><input type="checkbox" value="hand sanitizer"> Hand sanitizer</label>
+          </div>
+        </div>
+
+        <div class="material-category" id="cat-craft">
+          <button class="category-toggle" aria-expanded="false" aria-controls="mat-craft">
+            <span class="cat-icon">✂️</span> Office / Craft Supplies
+            <span class="chevron">▾</span>
+          </button>
+          <div class="category-items" id="mat-craft" hidden>
+            <label class="checkbox-item"><input type="checkbox" value="paper"> Paper</label>
+            <label class="checkbox-item"><input type="checkbox" value="cardboard"> Cardboard</label>
+            <label class="checkbox-item"><input type="checkbox" value="tape"> Tape</label>
+            <label class="checkbox-item"><input type="checkbox" value="white glue"> White glue</label>
+            <label class="checkbox-item"><input type="checkbox" value="scissors"> Scissors</label>
+            <label class="checkbox-item"><input type="checkbox" value="markers"> Markers</label>
+            <label class="checkbox-item"><input type="checkbox" value="pencils"> Pencils</label>
+            <label class="checkbox-item"><input type="checkbox" value="paperclips"> Paperclips</label>
+            <label class="checkbox-item"><input type="checkbox" value="index cards"> Index cards</label>
+            <label class="checkbox-item"><input type="checkbox" value="balloons"> Balloons</label>
+            <label class="checkbox-item"><input type="checkbox" value="string"> String/yarn</label>
+            <label class="checkbox-item"><input type="checkbox" value="magnets"> Magnets</label>
+          </div>
+        </div>
+
+        <div class="material-category" id="cat-outdoor">
+          <button class="category-toggle" aria-expanded="false" aria-controls="mat-outdoor">
+            <span class="cat-icon">🌿</span> Outdoor / Misc
+            <span class="chevron">▾</span>
+          </button>
+          <div class="category-items" id="mat-outdoor" hidden>
+            <label class="checkbox-item"><input type="checkbox" value="soil"> Dirt/soil</label>
+            <label class="checkbox-item"><input type="checkbox" value="rocks"> Rocks</label>
+            <label class="checkbox-item"><input type="checkbox" value="leaves"> Leaves/twigs</label>
+            <label class="checkbox-item"><input type="checkbox" value="water"> Water</label>
+            <label class="checkbox-item"><input type="checkbox" value="ice cubes"> Ice cubes</label>
+            <label class="checkbox-item"><input type="checkbox" value="flashlight"> Flashlight</label>
+            <label class="checkbox-item"><input type="checkbox" value="mirror"> Mirror</label>
+            <label class="checkbox-item"><input type="checkbox" value="coins"> Coins</label>
+            <label class="checkbox-item"><input type="checkbox" value="batteries"> Batteries</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom Material Input -->
+      <div class="form-group">
+        <label for="customMaterial">✏️ Add Custom Material</label>
+        <div class="custom-input-row">
+          <input type="text" id="customMaterial" placeholder="e.g. rubber duck, pool noodle…"
+                 aria-label="Custom material name">
+          <button class="btn btn-outline-primary" id="addMaterialBtn">+ Add</button>
+        </div>
+      </div>
+
+      <!-- Topic (optional) -->
+      <div class="form-group">
+        <label for="topicInput">🔭 Science Topic <span class="optional">(optional)</span></label>
+        <input type="text" id="topicInput" placeholder="e.g. osmosis, light refraction, gravity…"
+               aria-label="Optional science topic">
+      </div>
+
+      <!-- Generate Button -->
+      <button class="btn btn-generate" id="generateBtn" aria-live="polite">
+        <span class="generate-icon">✨</span>
+        <span class="generate-text">Generate Experiment</span>
+        <span class="generate-sparkles" aria-hidden="true"></span>
+      </button>
+    </section>
+
+    <!-- ── History Panel ── -->
+    <aside class="panel history-panel" aria-label="Experiment history">
+      <div class="history-header">
+        <h2 class="panel-title">
+          <span class="panel-icon">📋</span> History
+        </h2>
+        <button class="btn btn-ghost-danger btn-sm" id="clearHistoryBtn" aria-label="Clear all history">
+          🗑 Clear All
+        </button>
+      </div>
+
+      <div class="history-filters">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="search" id="historySearch" placeholder="Search experiments…"
+                 aria-label="Search history">
+        </div>
+        <div class="filter-row">
+          <select id="filterGrade" aria-label="Filter by grade">
+            <option value="">All Grades</option>
+            <option value="K">K</option>
+            <option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option>
+            <option value="9">9</option><option value="10">10</option>
+            <option value="11">11</option><option value="12">12</option>
+          </select>
+          <select id="filterDifficulty" aria-label="Filter by difficulty">
+            <option value="">All Levels</option>
+            <option value="1">★ Easy</option>
+            <option value="2">★★</option>
+            <option value="3">★★★ Medium</option>
+            <option value="4">★★★★</option>
+            <option value="5">★★★★★ Hard</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="history-list" id="historyList" aria-live="polite">
+        <div class="history-empty">
+          <span class="empty-icon">🧫</span>
+          <p>No experiments saved yet.</p>
+          <p class="empty-sub">Generate one and hit Save!</p>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- ── Output Section ── -->
+  <section class="output-section" id="outputSection" aria-label="Generated experiment" hidden>
+    <div class="output-card">
+      <div class="output-header">
+        <h2 class="panel-title">
+          <span class="panel-icon">🔬</span> Generated Experiment
+        </h2>
+        <div class="output-actions">
+          <button class="btn btn-primary" id="saveBtn">💾 Save to History</button>
+          <button class="btn btn-secondary" id="printBtn">🖨 Print Worksheet</button>
+        </div>
+      </div>
+      <div class="experiment-content" id="experimentContent" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ── Loading Overlay ── -->
+  <div class="loading-overlay" id="loadingOverlay" hidden aria-live="polite" role="status">
+    <div class="loading-orb" aria-hidden="true">
+      <div class="loading-ring r1"></div>
+      <div class="loading-ring r2"></div>
+      <div class="loading-ring r3"></div>
+      <span class="loading-emoji">⚗️</span>
+    </div>
+    <p class="loading-text">Cooking up your experiment…</p>
+    <p class="loading-sub">The AI is thinking hard 🧠</p>
+  </div>
+
+  <!-- ── Error Toast ── -->
+  <div class="error-toast" id="errorToast" role="alert" aria-live="assertive" hidden>
+    <span class="toast-icon">⚠️</span>
+    <span id="errorMsg"></span>
+    <button class="toast-close" id="closeError" aria-label="Dismiss error">✕</button>
+  </div>
+
+  <!-- ── Print Worksheet ── -->
+  <div class="print-worksheet" id="printWorksheet" aria-hidden="true">
+    <div class="print-header">
+      <h1 id="printTitle"></h1>
+      <div class="print-meta">
+        <span>Grade: <strong id="printGrade"></strong></span>
+        <span>Difficulty: <strong id="printDifficulty"></strong></span>
+        <span>Date: <strong id="printDate"></strong></span>
+      </div>
+    </div>
+    <div id="printContent"></div>
+    <div class="print-footer">Generated by Science Experiment Generator</div>
+  </div>
+
+  <script src="utils.js"></script>
+  <script src="storage.js"></script>
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
